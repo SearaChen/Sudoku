@@ -1,0 +1,185 @@
+import java.util.Arrays;
+public class Sudoku {
+	//sorting numbers according to ascending order
+	public static int[] sort(int[] input) {
+		int length=input.length;
+		int temp;
+		for(int i=0;i<length-1;i++){
+			for (int j=0;j<length-1;j++)
+			{
+				if(input[j]>input[j+1])
+				{
+					temp=input[j+1];
+					input[j+1]=input[j];
+					input[j]=temp;
+				}
+			}
+		}
+		return input;
+	}
+	
+	//return true if all entries are unique
+	public static boolean uniqueEntries(int[] input) 
+	{
+		int[] newinput= new int[input.length];
+		for(int i=0;i<input.length;i++) {
+			newinput[i]=input[i];
+		}
+		sort(newinput);
+		for (int i=0; i<input.length;i++) 
+		{
+			for(int j=i+1; j<input.length;j++) 
+			{
+				if (newinput[i]==newinput[j]) 
+					{
+						return false;
+					}
+			}
+		}
+	
+		return true;
+	}
+	
+	//getting the jth column of an array of integer arrays
+	public static int[] getColumn(int[][] input, int index) 
+	{
+		int[] column=new int[input.length];
+		for(int i=0; i<column.length;i++)
+		{
+			column[i]=input[i][index];
+		}
+		return column;
+	}
+	
+	//flatten an square array of integer arrays just to one array
+	public static int[] flatten(int[][] input)
+	{
+		int[] result=new int[input.length*input.length];
+		for(int i=0;i<(input.length);i++)
+		{
+			for(int j=0; j<input.length; j++)
+			{
+				result[i*(input.length)+j]=input[i][j];
+			}
+		}
+		return result;
+	}
+	
+	
+	/*take input of square array of integers arrays
+		two indices and a size m, to cut out a 
+		sub-grid*/
+	public static int[][] subGrid(int[][] input, int a,int b, int m)
+	{
+		int[][] subgrid= new int[m][m];
+		for(int i=0; i<m; i++)
+		{
+			for(int j=0; j<m; j++)
+			{
+				subgrid[i][j]=input[a+i][b+j];
+			}
+		}
+		return subgrid;
+	}
+	
+	//check length of array input 
+	public static boolean validLength(int[][] input)
+	{
+		boolean answer=true;
+		if(input.length!=9) 
+		{
+			answer=false;
+		}
+		for(int i=0;i<input.length;i++)
+		{
+			if(input[i].length!=9)
+			{
+				answer= false;
+			}
+		}
+		return answer;
+	}
+ 	// return true if number is within range of 1-9
+	public static boolean validNumber(int[][] input) 
+		{
+			for(int i=0; i<input.length;i++)
+			{
+				for(int j=0; j<input[i].length;j++)
+				{
+					if(input[i][j]<1||input[i][j]>9)
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+	
+	//final, check if a solution is a valid sudoku solution
+	public static boolean isSudoku(int[][] input)
+	{
+		boolean answer=true;
+		if (validLength(input)==false) 
+		{
+			answer= false;
+		}
+		
+		
+		if(validNumber(input)==false)
+		{
+			answer= false;
+		}
+		
+		//check row 
+		for(int i=0; i< input.length;i++)
+		{
+			if(uniqueEntries(input[i])==false)
+			{
+				answer=false;
+			}
+		}
+
+		//check column 
+		for(int i=0;i<9;i++) 
+		{
+			if((uniqueEntries(getColumn(input,i)))==false)
+			{
+				answer=false;
+			}
+		}
+
+		//check subgrid
+		for(int i=0; i<9;i+=3){
+			for(int j=0;j<9;j+=3){
+				if (uniqueEntries(flatten(subGrid(input,i,j,3)))==false){
+					answer=false;
+				}
+			}
+		}
+		return answer;
+	}
+	
+	
+	public static void main(String[] args) 
+	{
+		int[] input={5,2,8,3,6,11,34,54,7,1,4,9};
+		int [][] solution=
+			{
+				{5,3,4,6,7,8,9,1,2},
+				{6,7,2,1,9,5,3,4,8},
+				{1,9,8,3,4,2,5,6,7},
+				{8,5,9,7,6,1,4,2,3},
+				{4,2,6,8,5,3,7,9,1},
+				{7,1,3,9,2,4,8,5,6},
+				{9,6,1,5,3,7,2,8,4},
+				{2,8,7,4,1,9,6,3,5},
+				{3,4,5,2,8,6,1,7,9},
+				
+			};
+		System.out.println(isSudoku(solution));
+		
+		
+		}
+	}
+
+
